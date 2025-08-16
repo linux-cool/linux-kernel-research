@@ -23,29 +23,44 @@
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <h1 class="site-title">Linux内核研究项目</h1>
-                <p class="site-subtitle">深入探索Linux内核核心技术与实现机制</p>
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>Linux内核研究</h1>
+                </div>
+                <div class="nav-menu" id="nav-menu">
+                    <a href="#home" class="nav-link">首页</a>
+                    <a href="#projects" class="nav-link">项目</a>
+                    <a href="#about" class="nav-link">关于</a>
+                </div>
+                <div class="nav-toggle" id="nav-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
-        </div>
+        </nav>
     </header>
 
-    <!-- Stats Section -->
-    <section class="stats">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-number" id="total-projects">0</span>
-                    <span class="stat-label">内核模块</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="category-count">0</span>
-                    <span class="stat-label">研究领域</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="year-count">0</span>
-                    <span class="stat-label">研究年限</span>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Linux内核研究项目</h1>
+                <p class="hero-subtitle">深入探索Linux内核核心技术与实现机制</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="project-count">0</span>
+                        <span class="stat-label">内核模块</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="category-count">0</span>
+                        <span class="stat-label">研究领域</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="year-count">0</span>
+                        <span class="stat-label">研究年限</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -371,13 +386,22 @@
             }
             
             updateStats() {
+                // 更新hero section中的统计数据
+                const projectCount = document.getElementById('project-count');
+                const categoryCountHero = document.getElementById('category-count');
+                const yearCountHero = document.getElementById('year-count');
+
+                // 更新原有的统计数据（如果存在）
                 const totalProjects = document.getElementById('total-projects');
-                const categoryCount = document.getElementById('category-count');
-                const yearCount = document.getElementById('year-count');
-                
-                if (totalProjects) totalProjects.textContent = this.projects.length;
-                if (categoryCount) categoryCount.textContent = [...new Set(this.projects.map(p => p.category))].length;
-                if (yearCount) yearCount.textContent = [...new Set(this.projects.map(p => p.year))].length;
+
+                const projectsLength = this.projects.length;
+                const categoriesLength = [...new Set(this.projects.map(p => p.category))].length;
+                const yearsLength = [...new Set(this.projects.map(p => p.year))].length;
+
+                if (projectCount) projectCount.textContent = projectsLength;
+                if (categoryCountHero) categoryCountHero.textContent = categoriesLength;
+                if (yearCountHero) yearCountHero.textContent = yearsLength;
+                if (totalProjects) totalProjects.textContent = projectsLength;
             }
             
             showProjectDetails(projectId) {
@@ -596,7 +620,28 @@
             portfolio = new LinuxKernelResearchPortfolio();
             window.portfolio = portfolio;
         });
-        
+
+        // 导航栏交互
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.getElementById('nav-toggle');
+            const navMenu = document.getElementById('nav-menu');
+
+            if (navToggle && navMenu) {
+                navToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                    navToggle.classList.toggle('active');
+                });
+
+                // 点击导航链接时关闭移动端菜单
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navMenu.classList.remove('active');
+                        navToggle.classList.remove('active');
+                    });
+                });
+            }
+        });
+
         // 平滑滚动
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
