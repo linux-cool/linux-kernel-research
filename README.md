@@ -1,143 +1,166 @@
-# Programming Languages Research Portfolio - 编程语言研究项目展示网站
+# Linux内核研究项目
 
-一个现代化的编程语言研究项目展示网站，专注于C/C++/Python/Shell编程语言的深度研究，使用纯 HTML、CSS 和 JavaScript 构建，支持 GitHub Pages 部署。
+这是一个专注于Linux内核深度研究的项目，涵盖内存管理、进程调度、网络子系统、文件系统、设备驱动等核心技术领域。
 
-## ✨ 功能特性
+## 项目特色
 
-- 🎨 **现代化设计** - 采用 Material Design 风格，界面简洁美观
-- 📱 **完全响应式** - 支持各种设备尺寸，移动端友好
-- 🔍 **智能搜索** - 支持项目标题、描述、标签的全文搜索
-- 🏷️ **分类筛选** - 按编程语言和研究领域进行项目筛选
-- 📊 **动态统计** - 实时显示项目数量、研究领域等统计信息
-- 💻 **项目详情** - 点击项目卡片查看详细信息和描述
-- 🌐 **多语言支持** - 支持中文界面（代码注释使用英文）
+- **内核级研究**：深入Linux内核源码，理解核心机制和实现原理
+- **实践导向**：每个研究领域都包含可编译运行的内核模块示例
+- **性能分析**：专注于内核性能分析、优化和调试技术
+- **安全机制**：研究内核安全机制、漏洞分析和防护策略
+- **工具链完整**：提供完整的内核开发、调试和分析工具链
 
-## 🚀 快速开始
+## 研究领域
 
-### 本地开发
+### 🧠 内核核心子系统
+- **内核内存管理**：buddy分配器、slab分配器、虚拟内存管理、内存回收
+- **进程调度**：CFS调度器、实时调度、同步机制、RCU
+- **网络子系统**：协议栈实现、套接字层、网络设备驱动、流量控制
+- **文件系统**：VFS层、ext4/btrfs文件系统、块设备、I/O调度
 
-1. 克隆项目到本地
+### 🔧 内核开发技术
+- **设备驱动**：字符设备、块设备、网络设备、平台驱动、中断处理
+- **内核性能**：性能分析工具、基准测试、瓶颈优化、扩展性研究
+- **内核安全**：权限控制、内存保护、安全模块、漏洞分析
+- **内核工具链**：调试技术、静态分析、开发环境、内核模块开发
+
+## 技术栈
+
+- **内核开发**：C语言、汇编、内核API、系统调用
+- **调试工具**：KGDB、ftrace、perf、SystemTap
+- **分析工具**：Sparse、Coccinelle、静态分析器
+- **性能工具**：perf、eBPF、火焰图、基准测试
+- **虚拟化**：QEMU、KVM、容器技术
+
+## 项目结构
+
+```
+projects/
+├── 内核内存管理/        # 内存管理子系统研究
+├── 进程调度/           # 进程调度和同步机制
+├── 网络子系统/         # 网络协议栈和驱动
+├── 文件系统/           # 文件系统和存储
+├── 设备驱动/           # 设备驱动程序开发
+├── 内核性能/           # 性能分析和优化
+├── 内核安全/           # 安全机制和漏洞研究
+└── 内核工具链/         # 开发和调试工具
+```
+
+## 快速开始
+
+1. **克隆项目**
+   ```bash
+   git clone https://github.com/your-username/linux-kernel-research.git
+   cd linux-kernel-research
+   ```
+
+2. **安装依赖**
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get install build-essential linux-headers-$(uname -r)
+   sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils
+
+   # CentOS/RHEL
+   sudo yum groupinstall "Development Tools"
+   sudo yum install kernel-devel kernel-headers
+   ```
+
+3. **编译内核模块**
+   ```bash
+   cd projects
+   make all  # 编译所有模块
+   # 或编译特定模块
+   make memory    # 编译内存管理模块
+   make scheduler # 编译调度器模块
+   ```
+
+4. **加载和测试模块**
+   ```bash
+   cd 内核内存管理
+   sudo insmod buddy_allocator.ko
+   dmesg | tail -20  # 查看内核日志
+   sudo rmmod buddy_allocator
+   ```
+
+## 学习路径
+
+### 初学者路径
+1. 了解Linux内核基础架构
+2. 学习内核模块开发基础
+3. 掌握内核调试技术
+4. 理解内存管理基本概念
+
+### 进阶路径
+1. 深入研究进程调度算法
+2. 分析网络协议栈实现
+3. 学习设备驱动开发
+4. 掌握内核性能分析
+
+### 专家路径
+1. 内核安全机制研究
+2. 内核漏洞分析和利用
+3. 内核性能优化和调优
+4. 内核新特性开发
+
+## 开发环境
+
+### 推荐配置
+- **操作系统**：Ubuntu 20.04+ 或 CentOS 8+
+- **内核版本**：Linux 5.4+ (支持最新特性)
+- **编译器**：GCC 9+ 或 Clang 10+
+- **内存**：至少8GB (推荐16GB+)
+- **存储**：至少50GB可用空间
+
+### 虚拟化环境
 ```bash
-git clone <your-repo-url>
-cd programming-languages-research
+# 使用QEMU进行内核调试
+qemu-system-x86_64 -kernel bzImage -initrd initramfs.cpio.gz \
+  -append "console=ttyS0" -nographic -s -S
+
+# 使用GDB连接调试
+gdb vmlinux
+(gdb) target remote :1234
+(gdb) continue
 ```
 
-2. 使用本地服务器运行（推荐）
-```bash
-# 使用 Python 3
-python -m http.server 8000
+## 贡献指南
 
-# 或使用 Node.js
-npx serve .
+我们欢迎各种形式的贡献：
 
-# 或使用 PHP
-php -S localhost:8000
-```
+- 🐛 **Bug报告**：发现内核模块问题请提交Issue
+- 💡 **功能建议**：有新的研究方向请分享
+- 📝 **文档改进**：帮助完善技术文档
+- 🔧 **代码贡献**：提交新的内核模块或优化
 
-3. 在浏览器中访问 `http://localhost:8000`
+## 安全声明
 
-### GitHub Pages 部署
+⚠️ **重要提醒**：本项目包含内核级代码，仅用于学习和研究目的。
 
-1. 将项目推送到 GitHub 仓库
-2. 在仓库设置中启用 GitHub Pages
-3. 选择部署分支（通常是 `main` 或 `gh-pages`）
-4. 等待部署完成，访问生成的 URL
+- 请在虚拟机或测试环境中运行
+- 不要在生产环境中加载未经测试的内核模块
+- 某些模块可能会影响系统稳定性
+- 请备份重要数据后再进行实验
 
-## 📁 项目结构
+## 资源链接
 
-```
-programming-languages-research/
-├── index.html          # 主页面
-├── css/
-│   ├── style.css       # 主样式文件
-│   └── responsive.css  # 响应式样式
-├── js/
-│   └── main.js        # 主要功能脚本
-├── projects/
-│   └── projects.json  # 项目数据文件
-├── images/            # 图片资源目录
-└── README.md          # 项目说明文档
-```
+- 📚 [Linux内核文档](https://www.kernel.org/doc/)
+- 🛠️ [内核开发环境配置](docs/kernel-dev-setup.md)
+- 📊 [性能测试结果](docs/performance-analysis.md)
+- 🔒 [内核安全指南](docs/kernel-security.md)
+- 🐧 [Linux内核源码](https://github.com/torvalds/linux)
 
-## 🎯 研究领域
+## 许可证
 
-### C语言研究
-- 内存管理与性能优化
-- 系统级编程最佳实践
-- 算法优化与数据结构
-- 跨平台兼容性研究
+本项目采用 GPL v2 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-### C++研究
-- 现代C++特性探索
-- 模板元编程技术
-- 智能指针与RAII模式
-- 移动语义与性能优化
+## 联系我们
 
-### Python研究
-- 高级编程特性
-- 性能优化策略
-- 异步编程技术
-- 科学计算应用
-
-### Shell研究
-- 脚本编程技巧
-- 系统自动化
-- 性能优化
-- Linux运维工具
-
-### 跨语言研究
-- 语言间互操作
-- FFI接口设计
-- 进程间通信
-- 多语言协同编程
-
-### 性能研究
-- 基准测试体系
-- 性能对比分析
-- 优化策略研究
-- 跨平台性能评估
-
-### 安全研究
-- 安全编程实践
-- 内存安全技术
-- 输入验证机制
-- 权限控制策略
-
-### 工具链研究
-- 编译器优化
-- 调试工具开发
-- 静态分析技术
-- 开发环境优化
-
-## 🛠️ 技术栈
-
-- **前端**: HTML5, CSS3, JavaScript (ES6+)
-- **样式**: CSS Grid, Flexbox, CSS Variables
-- **图标**: Font Awesome 6.0
-- **字体**: Google Fonts (Inter)
-- **部署**: GitHub Pages
-
-## 📱 浏览器支持
-
-- Chrome 60+
-- Firefox 55+
-- Safari 12+
-- Edge 79+
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request 来改进这个项目！
-
-## 📄 许可证
-
-MIT License - 详见 [LICENSE](LICENSE) 文件
-
-## 🙏 致谢
-
-- [Font Awesome](https://fontawesome.com/) - 图标库
-- [Google Fonts](https://fonts.google.com/) - 字体服务
-- [GitHub Pages](https://pages.github.com/) - 免费托管服务
+- 📧 Email: kernel.research@example.com
+- 💬 讨论区: [GitHub Discussions](https://github.com/your-username/linux-kernel-research/discussions)
+- 🐛 问题反馈: [GitHub Issues](https://github.com/your-username/linux-kernel-research/issues)
 
 ---
 
-**构建于 2025 年，致力于编程语言深度研究与技术分享** 🚀
+⭐ 如果这个项目对你有帮助，请给我们一个星标！
+
+**构建于 2025 年，致力于Linux内核深度研究与技术分享** �

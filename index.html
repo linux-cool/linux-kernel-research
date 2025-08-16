@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>编程语言研究项目展示 - Programming Languages Research Portfolio</title>
-    <meta name="description" content="C/C++/Python/Shell编程语言深度研究项目展示网站">
-    <meta name="keywords" content="编程语言,研究项目,C语言,C++,Python,Shell,技术研究">
+    <title>Linux内核研究项目展示 - Linux Kernel Research Portfolio</title>
+    <meta name="description" content="Linux内核深度研究项目 - 涵盖内存管理、进程调度、网络子系统、文件系统、设备驱动等核心技术">
+    <meta name="keywords" content="Linux内核,内核研究,内存管理,进程调度,网络子系统,文件系统,设备驱动,内核开发">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -25,8 +25,8 @@
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <h1 class="site-title">编程语言研究项目</h1>
-                <p class="site-subtitle">C/C++/Python/Shell编程语言深度研究</p>
+                <h1 class="site-title">Linux内核研究项目</h1>
+                <p class="site-subtitle">深入探索Linux内核核心技术与实现机制</p>
             </div>
         </div>
     </header>
@@ -37,7 +37,7 @@
             <div class="stats-grid">
                 <div class="stat-item">
                     <span class="stat-number" id="total-projects">0</span>
-                    <span class="stat-label">研究项目</span>
+                    <span class="stat-label">内核模块</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" id="category-count">0</span>
@@ -56,7 +56,7 @@
         <div class="container">
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" id="search-input" placeholder="搜索项目..." class="search-input">
+                    <input type="text" id="search-input" placeholder="搜索内核模块..." class="search-input">
                     <button class="search-btn">
                         <i class="fas fa-search"></i>
                     </button>
@@ -78,8 +78,8 @@
     <section id="projects" class="projects">
         <div class="container">
             <div class="section-header">
-                <h2>研究项目</h2>
-                <p>探索我在各个编程语言领域的研究成果和项目经验</p>
+                <h2>内核研究模块</h2>
+                <p>深入探索Linux内核各个子系统的核心技术和实现机制</p>
             </div>
             <div class="projects-grid" id="projects-grid">
                 <!-- 项目将在这里动态加载 -->
@@ -95,23 +95,26 @@
         <div class="container">
             <div class="section-header">
                 <h2>研究领域</h2>
-                <p>专注于C/C++/Python/Shell编程语言的深度研究与技术优化</p>
+                <p>专注于Linux内核核心子系统的深度研究与技术创新</p>
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <p>我专注于编程语言技术的深度研究，致力于探索C/C++/Python/Shell等语言的高级特性和性能优化策略。通过深入理解语言内部机制、内存管理和系统编程，我致力于解决高性能编程和跨语言协作的技术挑战。</p>
+                    <p>我专注于Linux内核技术的深度研究，致力于探索内核各个子系统的核心机制和实现原理。通过深入理解内核源码、系统调用和硬件抽象层，我致力于解决内核性能优化、安全机制和驱动开发的技术挑战。</p>
                     <p>我的核心研究领域包括：</p>
                     <ul class="research-areas">
-                        <li><i class="fas fa-bolt"></i> C语言内存管理与性能优化</li>
-                        <li><i class="fas fa-rocket"></i> C++现代特性与模板元编程</li>
-                        <li><i class="fas fa-snake"></i> Python高级编程与性能优化</li>
-                        <li><i class="fas fa-terminal"></i> Shell脚本编程与系统自动化</li>
-                        <li><i class="fas fa-link"></i> 跨语言编程接口与互操作</li>
-                        <li><i class="fas fa-chart-line"></i> 编程语言性能基准测试</li>
-                        <li><i class="fas fa-shield-alt"></i> 编程语言安全性与最佳实践</li>
-                        <li><i class="fas fa-tools"></i> 编程语言工具链与开发环境</li>
+                        <li><i class="fas fa-memory"></i> 内核内存管理：buddy分配器、slab分配器、虚拟内存</li>
+                        <li><i class="fas fa-cogs"></i> 进程调度：CFS调度器、实时调度、同步机制、RCU</li>
+                        <li><i class="fas fa-network-wired"></i> 网络子系统：协议栈实现、套接字层、网络设备驱动</li>
+                        <li><i class="fas fa-hdd"></i> 文件系统：VFS层、ext4/btrfs、块设备、I/O调度</li>
+                        <li><i class="fas fa-microchip"></i> 设备驱动：字符设备、块设备、平台驱动、中断处理</li>
+                        <li><i class="fas fa-tachometer-alt"></i> 内核性能：性能分析工具、基准测试、瓶颈优化</li>
+                        <li><i class="fas fa-shield-alt"></i> 内核安全：权限控制、内存保护、安全模块</li>
+                        <li><i class="fas fa-tools"></i> 内核工具链：调试技术、静态分析、开发环境</li>
                     </ul>
-                    <p>通过理论与实践相结合的研究方法，我致力于为编程语言技术领域贡献创新解决方案，推动相关技术的产业化应用和最佳实践的普及。</p>
+                    <p>通过理论与实践相结合的研究方法，我致力于为Linux内核技术领域贡献创新解决方案，推动内核技术的深度理解和最佳实践的普及。</p>
+                    <div class="warning-notice">
+                        <p><strong>⚠️ 重要提醒：</strong>本项目包含内核级代码，仅用于学习和研究目的。请在虚拟机或测试环境中运行，不要在生产环境中使用。</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -121,8 +124,8 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2025 Programming Languages Research Portfolio. All rights reserved.</p>
-                <p>Built with ❤️ for knowledge sharing</p>
+                <p>&copy; 2025 Linux Kernel Research Portfolio. All rights reserved.</p>
+                <p>Built with 🐧 for kernel knowledge sharing</p>
             </div>
         </div>
     </footer>
@@ -136,8 +139,8 @@
     </div>
 
     <script>
-        // 编程语言研究项目展示系统
-        class ProgrammingLanguagesPortfolio {
+        // Linux内核研究项目展示系统
+        class LinuxKernelResearchPortfolio {
             constructor() {
                 this.projects = [];
                 this.filteredProjects = [];
@@ -150,7 +153,7 @@
             }
             
             async init() {
-                console.log('初始化编程语言研究项目展示系统...');
+                console.log('初始化Linux内核研究项目展示系统...');
                 await this.loadProjects();
                 this.setupEventListeners();
                 this.renderProjects();
@@ -177,25 +180,25 @@
                 return [
                     {
                         id: 1,
-                        title: "C语言内存管理与性能优化深度研究",
-                        description: "深入研究C语言内存管理机制，包括动态内存分配、内存泄漏检测、性能优化等核心技术。",
-                        category: "C语言研究",
+                        title: "Linux内核内存管理子系统研究",
+                        description: "深入研究Linux内核内存管理机制，包括页面分配器、slab分配器、虚拟内存管理、内存回收等核心技术。",
+                        category: "内核内存管理",
                         year: 2024,
-                        tags: ["C语言", "内存管理", "性能优化"],
-                        image: "⚡",
-                        details: "C语言内存管理项目专注于系统级编程的核心技术。我们深入研究了C语言的内存模型和性能优化策略，实现了高效的内存池管理算法和内存泄漏检测工具。",
-                        folder: "C语言研究"
+                        tags: ["Linux内核", "内存管理", "页面分配", "虚拟内存"],
+                        image: "🧠",
+                        details: "Linux内核内存管理研究项目专注于内核级内存管理的核心技术。我们深入研究了Linux内核的内存子系统，分析了buddy算法和页面分配器的实现机制。",
+                        folder: "内核内存管理"
                     },
                     {
                         id: 2,
-                        title: "C++现代特性与模板元编程研究",
-                        description: "探索C++11/14/17/20现代特性，深入研究模板元编程、智能指针、移动语义等高级技术。",
-                        category: "C++研究",
+                        title: "Linux内核进程调度与同步机制研究",
+                        description: "探索Linux内核进程调度算法、同步原语、锁机制等核心技术，深入理解CFS调度器、RCU、自旋锁等关键实现。",
+                        category: "进程调度",
                         year: 2024,
-                        tags: ["C++", "模板元编程", "智能指针"],
-                        image: "🚀",
-                        details: "C++现代特性研究项目深入探索了C++的高级编程技术。我们基于最新的C++标准，实现了多种现代编程模式。",
-                        folder: "C++研究"
+                        tags: ["Linux内核", "进程调度", "CFS", "同步机制"],
+                        image: "⚙️",
+                        details: "Linux内核进程调度研究项目深入探索了内核的调度和同步机制。我们基于最新的内核版本，分析了多种调度算法。",
+                        folder: "进程调度"
                     }
                 ];
             }
@@ -590,7 +593,7 @@
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM加载完成，开始初始化...');
-            portfolio = new ProgrammingLanguagesPortfolio();
+            portfolio = new LinuxKernelResearchPortfolio();
             window.portfolio = portfolio;
         });
         

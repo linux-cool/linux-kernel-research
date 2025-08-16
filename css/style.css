@@ -939,3 +939,26 @@ body {
     color: #1f2937;
     font-weight: 600;
 }
+
+/* Warning Notice */
+.warning-notice {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 30px 0;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+}
+
+.warning-notice p {
+    margin: 0;
+    color: #92400e;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.warning-notice strong {
+    color: #b45309;
+}
