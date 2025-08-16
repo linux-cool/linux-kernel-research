@@ -62,6 +62,35 @@ performance:
 security:
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD)/内核安全 modules
 
+toolchain:
+	$(MAKE) -C 内核工具链
+
+# 设置调试工具链
+setup-toolchain:
+	$(MAKE) -C 内核工具链 install
+
+# 帮助信息
+help:
+	@echo "Linux内核研究项目构建系统"
+	@echo "=========================="
+	@echo ""
+	@echo "可用目标:"
+	@echo "  all           - 编译所有内核模块"
+	@echo "  memory        - 编译内存管理模块"
+	@echo "  scheduler     - 编译进程调度模块"
+	@echo "  network       - 编译网络子系统模块"
+	@echo "  filesystem    - 编译文件系统模块"
+	@echo "  driver        - 编译设备驱动模块"
+	@echo "  performance   - 编译性能分析模块"
+	@echo "  security      - 编译安全机制模块"
+	@echo "  toolchain     - 设置内核工具链"
+	@echo "  setup-toolchain - 安装和配置调试工具链"
+	@echo "  install       - 安装所有模块"
+	@echo "  clean         - 清理编译文件"
+	@echo "  help          - 显示此帮助信息"
+
+.PHONY: all modules clean install memory scheduler network filesystem driver performance security toolchain setup-toolchain help
+
 tools:
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD)/内核工具链 modules
 
