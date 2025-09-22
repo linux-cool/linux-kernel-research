@@ -1,0 +1,440 @@
+# Kubernetes部署配置 - 企业级AI Agent客服系统
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ai-customer-service
+  labels:
+    name: ai-customer-service
+
+---
+# ConfigMap - 应用配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: customer-service-config
+  namespace: ai-customer-service
+data:
+  app.yaml: |
+    server:
+      host: "0.0.0.0"
+      port: 8080
+      workers: 4
+    
+    database:
+      host: "postgres-service"
+      port: "5432"
+      database: "customer_service_db"
+      
+    redis:
+      host: "redis-service"
+      port: "6379"
+      
+    llm:
+      provider: "openai"
+      model: "gpt-4"
+      temperature: 0.7
+      max_tokens: 1000
+      
+    monitoring:
+      prometheus_enabled: true
+      metrics_port: 9090
+
+---
+# Secret - 敏感信息
+apiVersion: v1
+kind: Secret
+metadata:
+  name: customer-service-secrets
+  namespace: ai-customer-service
+type: Opaque
+data:
+  # Base64编码的密钥
+  database-password: Y3VzdG9tZXJfc2VydmljZV9wYXNzd29yZA==
+  openai-api-key: c2stWW91ck9wZW5BSUFQSUtleUhlcmU=
+  redis-password: cmVkaXNfcGFzc3dvcmQ=
+
+---
+# PostgreSQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: ai-customer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_DB
+          value: "customer_service_db"
+        - name: POSTGRES_USER
+          value: "customer_service_user"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: customer-service-secrets
+              key: database-password
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+
+---
+# PostgreSQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: ai-customer-service
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+  type: ClusterIP
+
+---
+# PostgreSQL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: ai-customer-service
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# Redis Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: ai-customer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        command: ["redis-server"]
+        args: ["--requirepass", "$(REDIS_PASSWORD)"]
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: customer-service-secrets
+              key: redis-password
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: redis-storage
+          mountPath: /data
+      volumes:
+      - name: redis-storage
+        persistentVolumeClaim:
+          claimName: redis-pvc
+
+---
+# Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: ai-customer-service
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP
+
+---
+# Redis PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: ai-customer-service
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# Customer Service Agent Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service-agent
+  namespace: ai-customer-service
+  labels:
+    app: customer-service-agent
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: customer-service-agent
+  template:
+    metadata:
+      labels:
+        app: customer-service-agent
+    spec:
+      containers:
+      - name: customer-service-agent
+        image: customer-service-agent:latest
+        ports:
+        - containerPort: 8080
+        - containerPort: 9090  # Prometheus metrics
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://customer_service_user:$(DATABASE_PASSWORD)@postgres-service:5432/customer_service_db"
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: customer-service-secrets
+              key: database-password
+        - name: REDIS_URL
+          value: "redis://:$(REDIS_PASSWORD)@redis-service:6379/0"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: customer-service-secrets
+              key: redis-password
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: customer-service-secrets
+              key: openai-api-key
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: logs-volume
+          mountPath: /app/logs
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config-volume
+        configMap:
+          name: customer-service-config
+      - name: logs-volume
+        emptyDir: {}
+
+---
+# Customer Service Agent Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service-agent-service
+  namespace: ai-customer-service
+  labels:
+    app: customer-service-agent
+spec:
+  selector:
+    app: customer-service-agent
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+  type: ClusterIP
+
+---
+# Ingress - 外部访问
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: customer-service-ingress
+  namespace: ai-customer-service
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+spec:
+  tls:
+  - hosts:
+    - customer-service.example.com
+    secretName: customer-service-tls
+  rules:
+  - host: customer-service.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: customer-service-agent-service
+            port:
+              number: 80
+
+---
+# HorizontalPodAutoscaler - 自动扩缩容
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: customer-service-hpa
+  namespace: ai-customer-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: customer-service-agent
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# ServiceMonitor - Prometheus监控
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: customer-service-monitor
+  namespace: ai-customer-service
+  labels:
+    app: customer-service-agent
+spec:
+  selector:
+    matchLabels:
+      app: customer-service-agent
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+
+---
+# NetworkPolicy - 网络安全策略
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: customer-service-network-policy
+  namespace: ai-customer-service
+spec:
+  podSelector:
+    matchLabels:
+      app: customer-service-agent
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 8080
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to: []  # 允许访问外部API (OpenAI等)
+    ports:
+    - protocol: TCP
+      port: 443
+
+---
+# PodDisruptionBudget - 中断预算
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: customer-service-pdb
+  namespace: ai-customer-service
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: customer-service-agent
